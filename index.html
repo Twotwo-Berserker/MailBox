@@ -495,8 +495,8 @@
                 return '时间错误';
             }
 
-            // 强制减去8小时时区差（UTC→北京时间）
-            date.setHours(date.getHours() - 8);
+            // 时间
+            date.setHours(date.getHours());
 
             return date.toLocaleTimeString([], {
                 hour: '2-digit',
@@ -506,3 +506,4 @@
     </script>
 </body>
 </html>
+

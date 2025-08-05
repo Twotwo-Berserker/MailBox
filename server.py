@@ -7,7 +7,15 @@ CORS(app)
 
 # 数据库连接函数
 def get_conn():
-    return pymysql.connect(host='127.0.0.1', port = 3306, user='root', password='123456', db='maibox', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+    conn = pymysql.connect(
+        host='Oneone22.mysql.pythonanywhere-services.com',
+        user='Oneone22',
+        password='160384Az',
+        db='Oneone22$maibox',
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor
+        )
+    return conn
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -117,8 +125,8 @@ def get_messages():
         user_id = user_row['id']
         friend_id = friend_row['id']
         cursor.execute("""
-            SELECT sender_id, type, content, timestamp 
-            FROM messages 
+            SELECT sender_id, type, content, timestamp
+            FROM messages
             WHERE (sender_id=%s AND receiver_id=%s) OR (sender_id=%s AND receiver_id=%s)
             ORDER BY timestamp ASC
         """, (user_id, friend_id, friend_id, user_id))
@@ -128,13 +136,14 @@ def get_messages():
             # MySQL的TIMESTAMP是UTC时间，转成ISO格式并添加Z标识
             iso_timestamp = row['timestamp'].isoformat() + 'Z'
             messages.append({
-                'sender': sender, 
-                'type': row['type'], 
-                'content': row['content'], 
+                'sender': sender,
+                'type': row['type'],
+                'content': row['content'],
                 'timestamp': iso_timestamp
             })
     conn.close()
     return jsonify({'success': True, 'messages': messages})
 
-if __name__ == '__main__':
-    app.run(host='10.195.169.157', port=5000,debug=True)
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({'success': True, 'msg': '后端接口正常'})

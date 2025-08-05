@@ -12,7 +12,7 @@
         <!-- 登录/注册区域 -->
         <div id="auth-area" class="max-w-md mx-auto bg-white rounded-lg shadow-md p-8">
             <h2 class="text-2xl font-bold mb-6 text-center">信箱系统</h2>
-            
+
             <!-- 登录表单 -->
             <div id="login-form">
                 <h3 class="text-xl mb-4 text-center">登录</h3>
@@ -32,7 +32,7 @@
                 </p>
                 <div id="login-message" class="mt-4 text-center text-red-500 hidden"></div>
             </div>
-            
+
             <!-- 注册表单 -->
             <div id="register-form" class="hidden">
                 <h3 class="text-xl mb-4 text-center">注册</h3>
@@ -53,7 +53,7 @@
                 <div id="register-message" class="mt-4 text-center text-red-500 hidden"></div>
             </div>
         </div>
-        
+
         <!-- 主界面 (登录后显示) -->
         <div id="main-area" class="hidden grid grid-cols-1 md:grid-cols-4 gap-6">
             <!-- 左侧边栏 - 用户信息和好友列表 -->
@@ -64,7 +64,7 @@
                         <i class="fa fa-sign-out mr-1"></i>退出登录
                     </button>
                 </div>
-                
+
                 <!-- 添加好友 -->
                 <div class="mb-6">
                     <h4 class="font-bold mb-2">添加好友</h4>
@@ -76,7 +76,7 @@
                     </div>
                     <div id="add-friend-message" class="mt-2 text-sm text-red-500 hidden"></div>
                 </div>
-                
+
                 <!-- 好友列表 -->
                 <div>
                     <h4 class="font-bold mb-2">好友列表</h4>
@@ -85,18 +85,18 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- 右侧 - 聊天区域 -->
             <div class="bg-white rounded-lg shadow-md p-4 md:col-span-3 flex flex-col h-[600px]">
                 <div id="chat-header" class="border-b pb-4 mb-4 text-center">
                     <h3 id="current-chat-friend" class="text-xl font-bold">请选择一个好友开始聊天</h3>
                 </div>
-                
+
                 <!-- 消息区域 -->
                 <div id="messages-area" class="flex-1 overflow-y-auto mb-4 space-y-4">
                     <!-- 消息会动态添加到这里 -->
                 </div>
-                
+
                 <!-- 发送消息区域 -->
                 <div id="send-message-area" class="border-t pt-4 hidden">
                     <div class="flex">
@@ -111,14 +111,14 @@
     </div>
 
     <script>
-        // 服务器地址，保持和你的Flask服务器一致
-        const SERVER_URL = 'http://10.195.169.157:5000';
-        
+        // 服务器地址
+        const SERVER_URL = 'https://oneone22.pythonanywhere.com/';
+
         // 当前登录用户
         let currentUser = null;
         // 当前聊天的好友
         let currentFriend = null;
-        
+
         // DOM元素
         const authArea = document.getElementById('auth-area');
         const mainArea = document.getElementById('main-area');
@@ -129,55 +129,55 @@
         const messagesAreaEl = document.getElementById('messages-area');
         const currentChatFriendEl = document.getElementById('current-chat-friend');
         const sendMessageArea = document.getElementById('send-message-area');
-        
+
         // 登录表单元素
         const loginUsernameEl = document.getElementById('login-username');
         const loginPasswordEl = document.getElementById('login-password');
         const loginBtn = document.getElementById('login-btn');
         const loginMessageEl = document.getElementById('login-message');
-        
+
         // 注册表单元素
         const regUsernameEl = document.getElementById('reg-username');
         const regPasswordEl = document.getElementById('reg-password');
         const registerBtn = document.getElementById('register-btn');
         const registerMessageEl = document.getElementById('register-message');
-        
+
         // 添加好友元素
         const friendNameEl = document.getElementById('friend-name');
         const addFriendBtn = document.getElementById('add-friend-btn');
         const addFriendMessageEl = document.getElementById('add-friend-message');
-        
+
         // 发送消息元素
         const messageContentEl = document.getElementById('message-content');
         const sendMessageBtn = document.getElementById('send-message-btn');
-        
+
         // 退出登录按钮
         const logoutBtn = document.getElementById('logout-btn');
-        
+
         // 切换到注册表单
         document.getElementById('show-register').addEventListener('click', () => {
             loginForm.classList.add('hidden');
             registerForm.classList.remove('hidden');
             clearMessages();
         });
-        
+
         // 切换到登录表单
         document.getElementById('show-login').addEventListener('click', () => {
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
             clearMessages();
         });
-        
+
         // 登录功能
         loginBtn.addEventListener('click', async () => {
             const username = loginUsernameEl.value.trim();
             const password = loginPasswordEl.value.trim();
-            
+
             if (!username || !password) {
                 showMessage(loginMessageEl, '用户名和密码不能为空');
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${SERVER_URL}/login`, {
                     method: 'POST',
@@ -186,9 +186,9 @@
                     },
                     body: JSON.stringify({ username, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     currentUser = username;
                     showMainArea();
@@ -201,17 +201,17 @@
                 console.error('登录错误:', error);
             }
         });
-        
+
         // 注册功能
         registerBtn.addEventListener('click', async () => {
             const username = regUsernameEl.value.trim();
             const password = regPasswordEl.value.trim();
-            
+
             if (!username || !password) {
                 showMessage(registerMessageEl, '用户名和密码不能为空');
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${SERVER_URL}/register`, {
                     method: 'POST',
@@ -220,9 +220,9 @@
                     },
                     body: JSON.stringify({ username, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showMessage(registerMessageEl, '注册成功，请登录', 'green');
                     setTimeout(() => {
@@ -236,21 +236,21 @@
                 console.error('注册错误:', error);
             }
         });
-        
+
         // 添加好友功能
         addFriendBtn.addEventListener('click', async () => {
             const friend = friendNameEl.value.trim();
-            
+
             if (!friend) {
                 showMessage(addFriendMessageEl, '请输入好友用户名');
                 return;
             }
-            
+
             if (friend === currentUser) {
                 showMessage(addFriendMessageEl, '不能添加自己为好友');
                 return;
             }
-            
+
             try {
                 const response = await fetch(`${SERVER_URL}/add_friend`, {
                     method: 'POST',
@@ -259,9 +259,9 @@
                     },
                     body: JSON.stringify({ username: currentUser, friend })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showMessage(addFriendMessageEl, '添加好友成功', 'green');
                     friendNameEl.value = '';
@@ -275,7 +275,7 @@
                 console.error('添加好友错误:', error);
             }
         });
-        
+
         // 发送消息功能
         sendMessageBtn.addEventListener('click', sendMessage);
         messageContentEl.addEventListener('keypress', (e) => {
@@ -283,7 +283,7 @@
                 sendMessage();
             }
         });
-        
+
         // 退出登录
         logoutBtn.addEventListener('click', () => {
             currentUser = null;
@@ -293,17 +293,17 @@
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
         });
-        
+
         // 发送消息函数
         async function sendMessage() {
             const content = messageContentEl.value.trim();
-            
+
             if (!content || !currentFriend) return;
-            
+
             try {
                 // 获取当前时间戳
                 const timestamp = new Date().toISOString();
-                
+
                 const response = await fetch(`${SERVER_URL}/send_message`, {
                     method: 'POST',
                     headers: {
@@ -317,9 +317,9 @@
                         timestamp
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     messageContentEl.value = '';
                     // 发送成功后刷新消息列表
@@ -332,7 +332,7 @@
                 console.error('发送消息错误:', error);
             }
         }
-        
+
         // 获取好友列表
         async function getFriendsList() {
             try {
@@ -343,13 +343,13 @@
                     },
                     body: JSON.stringify({ username: currentUser })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // 清空现有列表
                     friendsListEl.innerHTML = '';
-                    
+
                     // 添加好友到列表
                     data.friends.forEach(friend => {
                         const friendEl = document.createElement('div');
@@ -368,17 +368,17 @@
                 console.error('获取好友列表错误:', error);
             }
         }
-        
+
         // 开始与指定好友聊天
         async function startChatWith(friend) {
             currentFriend = friend;
             currentChatFriendEl.textContent = `与 ${friend} 聊天中`;
             sendMessageArea.classList.remove('hidden');
-            
+
             // 获取历史消息
             await getMessages(currentUser, friend);
         }
-        
+
         // 获取消息记录
         async function getMessages(user, friend) {
             try {
@@ -389,18 +389,18 @@
                     },
                     body: JSON.stringify({ username: user, friend })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // 清空现有消息
                     messagesAreaEl.innerHTML = '';
-                    
+
                     // 添加消息到界面
                     data.messages.forEach(msg => {
                         addMessageToUI(msg.sender, msg.content, msg.timestamp);
                     });
-                    
+
                     // 滚动到底部
                     messagesAreaEl.scrollTop = messagesAreaEl.scrollHeight;
                 } else {
@@ -410,11 +410,11 @@
                 console.error('获取消息错误:', error);
             }
         }
-        
+
         // 添加消息到界面
         function addMessageToUI(sender, content, timestamp) {
             const messageEl = document.createElement('div');
-            
+
             // 根据发送者设置不同的样式
             if (sender === currentUser) {
                 messageEl.className = 'flex justify-end';
@@ -435,25 +435,25 @@
                     </div>
                 `;
             }
-            
+
             messagesAreaEl.appendChild(messageEl);
         }
-        
+
         // 显示主界面
         function showMainArea() {
             authArea.classList.add('hidden');
             mainArea.classList.remove('hidden');
             currentUserEl.textContent = `欢迎，${currentUser}`;
-            
+
             // 获取好友列表
             getFriendsList();
-            
+
             // 重置聊天区域
             currentChatFriendEl.textContent = '请选择一个好友开始聊天';
             messagesAreaEl.innerHTML = '';
             sendMessageArea.classList.add('hidden');
         }
-        
+
         // 清除认证表单
         function clearAuthForms() {
             loginUsernameEl.value = '';
@@ -462,45 +462,45 @@
             regPasswordEl.value = '';
             clearMessages();
         }
-        
+
         // 显示消息
         function showMessage(element, text, color = 'red') {
             element.textContent = text;
             element.className = `mt-4 text-center text-${color}-500`;
             element.classList.remove('hidden');
-            
+
             // 3秒后自动隐藏
             setTimeout(() => {
                 element.classList.add('hidden');
             }, 3000);
         }
-        
+
         // 清除所有消息
         function clearMessages() {
             loginMessageEl.classList.add('hidden');
             registerMessageEl.classList.add('hidden');
             addFriendMessageEl.classList.add('hidden');
         }
-        
+
         // 格式化时间
         function formatTime(timestamp) {
             let date = new Date(timestamp);
-                
+
             if (isNaN(date.getTime())) {
                 const cleaned = timestamp.replace(' ', 'T');
                 date = new Date(cleaned);
             }
-            
+
             if (isNaN(date.getTime())) {
                 return '时间错误';
             }
-            
+
             // 强制减去8小时时区差（UTC→北京时间）
             date.setHours(date.getHours() - 8);
-            
-            return date.toLocaleTimeString([], { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+
+            return date.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     </script>

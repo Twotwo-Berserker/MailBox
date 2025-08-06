@@ -118,6 +118,7 @@
         let currentUser = null;
         // 当前聊天的好友
         let currentFriend = null;
+        let lastMessageDate = null; // 记录上一条消息的日期
 
         // DOM元素
         const authArea = document.getElementById('auth-area');
@@ -395,12 +396,12 @@
                 if (data.success) {
                     // 清空现有消息
                     messagesAreaEl.innerHTML = '';
-
+                    // 重置 lastMessageDate
+                    lastMessageDate = null;
                     // 添加消息到界面
                     data.messages.forEach(msg => {
                         addMessageToUI(msg.sender, msg.content, msg.timestamp);
                     });
-
                     // 滚动到底部
                     messagesAreaEl.scrollTop = messagesAreaEl.scrollHeight;
                 } else {
@@ -413,14 +414,23 @@
 
         // 添加消息到界面
         function addMessageToUI(sender, content, timestamp) {
-            const messageEl = document.createElement('div');
+            const messageDate = formatDateOnly(timestamp); // 获取年月日字符串
+
+            // 如果日期发生变化，插入日期分隔条
+            if (lastMessageDate !== messageDate) {
+                const dateDivider = document.createElement('div');
+                dateDivider.className = 'text-center my-2 text-gray-500 text-sm';
+                dateDivider.textContent = messageDate;
+                messagesAreaEl.appendChild(dateDivider);
+                lastMessageDate = messageDate;
+            }
 
             // 根据发送者设置不同的样式
+            const messageEl = document.createElement('div');
             if (sender === currentUser) {
                 messageEl.className = 'flex justify-end';
                 messageEl.innerHTML = `
-                    <div class="bg-blue-500 text-white p-3 rounded-lg max-w-[80%]">
-                        <div class="font-bold">我</div>
+                    <div class="bg-yellow-200 text-gray-800 p-3 rounded-lg max-w-[80%]">
                         <div>${content}</div>
                         <div class="text-xs mt-1 opacity-70">${formatTime(timestamp)}</div>
                     </div>
@@ -429,14 +439,27 @@
                 messageEl.className = 'flex justify-start';
                 messageEl.innerHTML = `
                     <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-[80%]">
-                        <div class="font-bold">${sender}</div>
                         <div>${content}</div>
                         <div class="text-xs mt-1 opacity-70">${formatTime(timestamp)}</div>
                     </div>
                 `;
             }
-
             messagesAreaEl.appendChild(messageEl);
+        }
+
+        // 工具函数：只格式化年月日
+        function formatDateOnly(timestamp) {
+            let date = new Date(timestamp);
+
+            if (isNaN(date.getTime())) {
+                const cleaned = timestamp.replace(' ', 'T');
+                date = new Date(cleaned);
+            }
+
+            if (isNaN(date.getTime())) return '日期错误';
+            
+            // 格式：2025年08月06日
+            return `${date.getFullYear()}年${String(date.getMonth()+1).padStart(2,'0')}月${String(date.getDate()).padStart(2,'0')}日`;
         }
 
         // 显示主界面
@@ -482,7 +505,7 @@
             addFriendMessageEl.classList.add('hidden');
         }
 
-        // 格式化时间
+        // 工具函数，格式化时间
         function formatTime(timestamp) {
             let date = new Date(timestamp);
 
@@ -506,4 +529,3 @@
     </script>
 </body>
 </html>
-

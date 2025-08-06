@@ -100,7 +100,7 @@
                 <!-- 发送消息区域 -->
                 <div id="send-message-area" class="border-t pt-4 hidden">
                     <div class="flex">
-                        <input type="text" id="message-content" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="输入消息...">
+                        <textarea id="message-content" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="输入消息..." rows="2"></textarea>
                         <button id="send-message-btn" class="bg-green-500 text-white py-2 px-4 rounded-r-md hover:bg-green-600 transition-colors">
                             <i class="fa fa-paper-plane"></i>
                         </button>
@@ -281,7 +281,23 @@
         sendMessageBtn.addEventListener('click', sendMessage);
         messageContentEl.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                sendMessage();
+                // Shift+Enter，换行
+                if (e.shiftKey) {
+                    // 在光标处插入一个换行符
+                    const start = messageContentEl.selectionStart;
+                    const end = messageContentEl.selectionEnd;
+                    const value = messageContentEl.value;
+                    messageContentEl.value = value.substring(0, start) + '\n' + value.substring(end);
+                    // 移动光标到换行后
+                    messageContentEl.selectionStart = messageContentEl.selectionEnd = start + 1;
+                    // 阻止默认行为（避免表单提交）
+                    e.preventDefault();
+                }
+                // 仅Enter，发送消息
+                else {
+                    sendMessage();
+                    e.preventDefault();
+                }
             }
         });
 
@@ -457,7 +473,7 @@
             }
 
             if (isNaN(date.getTime())) return '日期错误';
-            
+
             // 格式：2025年08月06日
             return `${date.getFullYear()}年${String(date.getMonth()+1).padStart(2,'0')}月${String(date.getDate()).padStart(2,'0')}日`;
         }

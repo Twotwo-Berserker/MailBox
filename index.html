@@ -447,7 +447,7 @@
                 messageEl.className = 'flex justify-end';
                 messageEl.innerHTML = `
                     <div class="bg-yellow-200 text-gray-800 p-3 rounded-lg max-w-[80%]">
-                        <div>${content}</div>
+                        <div style="white-space: pre-wrap;">${content}</div>
                         <div class="text-xs mt-1 opacity-70">${formatTime(timestamp)}</div>
                     </div>
                 `;
@@ -455,7 +455,7 @@
                 messageEl.className = 'flex justify-start';
                 messageEl.innerHTML = `
                     <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-[80%]">
-                        <div>${content}</div>
+                        <div style="white-space: pre-wrap;">${content}</div>
                         <div class="text-xs mt-1 opacity-70">${formatTime(timestamp)}</div>
                     </div>
                 `;
